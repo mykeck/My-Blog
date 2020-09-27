@@ -1,6 +1,6 @@
 from flask import render_template,redirect
 from . import main
-flask_login import login_required
+from flask_login import login_required
 
 @main.route('/')
 def index():
