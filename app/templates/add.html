@@ -1,3 +1,5 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +10,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>My Blog</title>
+  <title>Clean Blog - Start Bootstrap Theme</title>
 
   <!-- Bootstrap core CSS -->
   <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
@@ -39,9 +41,9 @@
 
         <ul class="nav navbar-nav ml-auto ">
           <button type="button" class="btn btn-outline-primary"><a href="/add">New Post</a></button>
+
           <li class="nav-item active">
             {% if current_user.is_authenticated %}
-
 
             <a class="nav-link" href="{{url_for('main.profile',uname=current_user.username)}}">Profile </a>
           </li>
@@ -55,12 +57,12 @@
       </div>
     </div>
   </nav>
-  <header class="masthead" style="background-image: url('../static/photos/jr-korpa-jM1r6kBwlyE-unsplash.jpg')">
+  <header class="masthead" style="background-image: url()">
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
           <div class="site-heading">
-            <h1>My Blog</h1>
+            <h1>Cherucole's Blog</h1>
             <span class="subheading">A Blog app implemented using Flask & Python</span>
           </div>
         </div>
@@ -69,40 +71,27 @@
   </header>
 
   <div class="container">
-
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        <button type="button" class="btn btn-outline-primary"><a href="/subscribe">Subscribe</a></button>
-        <br>
-        {% for post in posts %}
-        <div class="post-preview">
-          <a href="post/{{ post.id }}">
-            <h2 class="post-title">
-              {{ post.title }}
-            </h2>
-            <h3 class="post-subtitle">
-              {{ post.subtitle }}
-            </h3>
-          </a>
-          <p class="post-meta">Posted by {{ post.author }} on {{ post.date_posted.strftime('%B %d, %Y') }}</p>
-        </div>
-        {% endfor %}
-        <hr>
+        {{wtf.quick_form(form)}}
+
       </div>
     </div>
   </div>
+
 
   <!-- Footer -->
   <footer>
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-          <p class="copyright text-muted">Copyright &copy; mike collins 2020</p>
+          <p class="copyright text-muted">Copyright &copy;  mike collins</p>
         </div>
       </div>
     </div>
   </footer>
 
+  
 </body>
 
 </html>

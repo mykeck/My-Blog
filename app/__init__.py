@@ -4,6 +4,7 @@ from config import config_options
 from flask_login import LoginManager
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
+from flask_simplemde import SimpleMDE
 
 
 
@@ -14,6 +15,7 @@ login_manager.login_view = 'auth.login'
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 mail = Mail()
+simple = SimpleMDE()
 
 
 def create_app(config_name):
@@ -28,6 +30,7 @@ def create_app(config_name):
     login_manager.init_app(app)
     bootstrap.init_app(app)
     mail.init_app(app)
+    simple.init_app(app)
 
 
 
