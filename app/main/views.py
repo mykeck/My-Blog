@@ -1,6 +1,8 @@
-from flask import render_template,redirect
+from flask import render_template,request,redirect,url_for,abort
 from . import main
-from flask_login import login_required
+from flask_login import login_required, current_user
+from ..email import mail_message
+from .forms import PostForm,CommentForm
 
 @main.route('/')
 def index():
@@ -29,7 +31,7 @@ def add():
     return render_template('add.html', form=form)   
 
 
-@main.route('/post/delete/<init:post_id>' ,methods = ['GET', 'POST'])
+@main.route('/post/delete/<int:post_id>' ,methods = ['GET', 'POST'])
 @login_required
 def delete_post(post_id):
     post = Post.query.filter_by(id = post_id).one()
