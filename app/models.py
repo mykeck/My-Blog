@@ -8,94 +8,83 @@ from datetime import datetime
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))    
+    return User.query.get(int(user_id)) 
 
 
-class User(UserMixin,db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(255),index = True)
-    email = db.Column(db.String(255),unique = True,index = True)
-    bio = db.Column(db.String(255))
-    profile_pic_path = db.Column(db.String())
-    password_secure = db.Column(db.String(255))
-    posts = db.relationship('Post',backref = 'user', lazy = 'dynamic')
-    comments = db.relationship('Comment', backref='username', lazy='dynamic')
-
-    password_secure = db.Column(db.String(255))
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    secure_password = db.Column(db.String(255),nullable = False)
+    posts = db.relationship('Post', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
 
 
     @property
-    def password(self):
+    def set_password(self):
         raise AttributeError('You cannot read the password attribute')
 
-    @password.setter
-    def password(self,password):
-        self.pass_secure = generate_password_hash(password)
+    @set_password.setter
+    def password(self, password):
+            self.secure_password = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.pass_secure,password) 
-
-
-    def __repr__(self):
-        return f'{self.username}'
-
-        
-class Post(db.Model):
-    __tablename__ = 'posts'
-
-    id = db.Column(db.Integer, primary_key = True)
-    title = db.Column(db.String(50))
-    subtitle = db.Column(db.String(50))
-    comments = db.relationship('Comment',backref = 'post', lazy = 'dynamic') 
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
-    content = db.Column(db.Text) 
-
-
-class Comment(db.Model):
-    __tablename__ = 'comments'
-
-    id = db.Column(db.Integer, primary_key = True)
-    Comment = db.Column(db.String)
-    posted = db.Column(db.DateTime, default = datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+        return check_password_hash(self.secure_password,password) 
 
 
     def save(self):
         db.session.add(self)
         db.session.commit()
 
-    @classmethod
-    def get_comments(cls, id):
-        comments = Comment.query.filter_by(post_id=id).all()
-
-        return comments
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
 
-class Subscriber(db.Model):
-    __tablename__ = 'subscribers'
-
-
+class Post(db.Model):
+    __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255))
-    email = db.Column(db.String(255),unique = True,index = True)
+    title = db.Column(db.String, nullable=False)
+    author = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
-    def save_subscriber(self):
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"
+
+    
+class Comment(db.Model):
+    __tablename__ = 'comments'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    comment = db.Column(db.Text())
+    dateposted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def save_comment(self):
        db.session.add(self)
        db.session.commit()
 
-    @classmethod
-    def get_subscribers(cls,id):
-       return Subscriber.query.all()
 
+    @classmethod
+    def get_comments(cls, post_id):
+        comments = Comment.query.filter_by(post_id=post_id).all()
+        return comments
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def __repr__(self):
-       return f'User {self.email}'
-
-
- 
+            return f"Comment('{self.content}', '{self.dateposted}')"

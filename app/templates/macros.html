@@ -1,0 +1,68 @@
+{% macro display_posts(posts) %}
+    <div class="row">
+        <div class="card-columns">
+        {% for post in posts %}
+        <hr/>
+        <div class="card">
+            <div class="card-title">
+                <p><strong>Author: </strong>{{post.author}}. <small class="text-muted">Date posted: {{ post.date_posted.strftime('%Y-%m-%d') }}</small></p>       
+            </div>
+            <hr style="height:1px;">
+            <div class="card-body">
+                <u><h4>{{ post.title }}</h4></u>
+                <p>{{ post.content }}</p> 
+            </div>          
+            <div class="card-footer">
+                <a href="/comments/{{post.id}}"><button class="btn btn-info">Comments</button></a>
+            </div>   
+        </div>
+        <hr>
+        <br>
+        {% endfor %}
+    </div>
+    </div>
+{% endmacro %}
+
+
+{% macro display_comments(post_comments) %}
+
+{% if post_comments %}
+    {% if ida == idb %}
+        <div class="card-columns">
+            {% for each_comment in post_comments %}
+            <div class="card"> 
+                <div class="card-body">
+                    <p>{{each_comment.comment}}
+                        <a href="/delete_comment/{{each_comment.id}}"><i class="glyphicon glyphicon-trash"></i></a>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="card-columns">
+            {% for each_comment in post_comments %}
+            <div class="card">
+                
+                <div class="card-body">       
+                    <p>{{each_comment.comment}}</p>  
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+   {% endif %}
+{% else %}
+   <p>There are no comments for this post.</p>
+{% endif %}
+{% endmacro %}
+
+
+{% macro display_quote(quotes)%}
+<div class="jumbotron">
+    <h2 class="text-danger">Food for thought:</h2>
+    <h5>{{quotes.quote}}</h5>
+    <p>~ {{quotes.author}}</p>
+</div>
+{%endmacro%}

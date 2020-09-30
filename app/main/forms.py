@@ -8,21 +8,13 @@ class UpdateProfile(FlaskForm):
     submit = SubmitField('Submit')
 
 
+class PostForm(FlaskForm):
+    title = StringField('Title', validators=[Required()])
+    content = TextAreaField('Content', validators=[Required()])
+    submit = SubmitField('Post')
+
+
 
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Leave your comment...',validators = [Required()])
-    submit = SubmitField('Submit')
-
-
-class AddPost(FlaskForm):
-    title = TextAreaField('Title.')
-    subtitle = TextAreaField('Subtitle.')
-    content = TextAreaField('Content')
-    submit = SubmitField('Submit')
-
-
-class SubscriberForm(FlaskForm):
-
-    email = StringField('Your Email Address...')
-    name = StringField('Enter your name')
-    submit = SubmitField('Subscribe')
+    comment = TextAreaField('Post a comment', validators=[Required()])
+    submit = SubmitField('Post')
